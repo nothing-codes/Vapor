@@ -29,7 +29,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           password,
         })
         if (error) throw error
-        setSuccess('Регистрация успешна! Проверьте email для подтверждения.')
+        router.push('/verify-email')
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -57,7 +57,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded focus:border-vapor-blue focus:outline-none"
+          className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded-lg focus:border-vapor-blue focus:outline-none focus:ring-2 focus:ring-vapor-blue/50"
           placeholder="your@email.com"
         />
       </div>
@@ -73,19 +73,19 @@ export default function AuthForm({ mode }: AuthFormProps) {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded focus:border-vapor-blue focus:outline-none"
+          className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded-lg focus:border-vapor-blue focus:outline-none focus:ring-2 focus:ring-vapor-blue/50"
           placeholder="••••••••"
         />
       </div>
 
       {error && (
-        <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
+        <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg animate-pulse">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded">
+        <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg">
           {success}
         </div>
       )}
@@ -93,7 +93,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-vapor-blue hover:bg-vapor-lightblue text-white py-3 rounded font-medium transition disabled:opacity-50"
+        className="w-full bg-vapor-blue hover:bg-vapor-lightblue text-white py-3 rounded-lg font-medium transition-all hover:scale-105 disabled:opacity-50 glow"
       >
         {loading ? 'Загрузка...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
       </button>

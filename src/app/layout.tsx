@@ -5,6 +5,9 @@ import Header from '@/components/Header'
 export const metadata: Metadata = {
   title: 'Vapor - Game Store',
   description: 'Vapor game distribution platform',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({
@@ -14,6 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
+      <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+      </head>
       <body>
         <Header />
         <main className="container mx-auto px-4 py-8">
