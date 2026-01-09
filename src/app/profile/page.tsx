@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 
 interface Profile {
   username: string
+  avatar_url: string | null
   avatar_color: string
   bio: string
 }
@@ -14,9 +15,10 @@ export default function ProfilePage() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [profile, setProfile] = useState<Profile>({
     username: '',
+    avatar_url: null,
     avatar_color: '#1b8edb',
     bio: ''
   })
@@ -29,6 +31,16 @@ export default function ProfilePage() {
   useEffect(() => {
     checkUser()
   }, [])
+
+  // Автосохранение при изменении
+  useEffect(() => {
+    if (user && !loading) {
+      const timer = setTimeout(() => {
+        saveProfile(true)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [profile.username, profile.bio, profile.avatar_color])
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -51,32 +63,96 @@ export default function ProfilePage() {
     if (data) {
       setProfile({
         username: data.username || '',
+        avatar_url: data.avatar_url || null,
         avatar_color: data.avatar_color || '#1b8edb',
         bio: data.bio || ''
       })
     }
   }
 
-  const saveProfile = async () => {
+  const saveProfile = async (silent = false) => {
     if (!user) return
-    setSaving(true)
 
     const { error } = await supabase
       .from('profiles')
       .upsert({
         id: user.id,
         username: profile.username,
+        avatar_url: profile.avatar_url,
         avatar_color: profile.avatar_color,
         bio: profile.bio,
         updated_at: new Date().toISOString()
       })
 
-    if (error) {
+    if (error && !silent) {
       alert('Ошибка сохранения: ' + error.message)
-    } else {
-      alert('Профиль сохранен!')
     }
-    setSaving(false)
+  }
+
+  const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true)
+
+      if (!event.target.files || event.target.files.length === 0) {
+        return
+      }
+
+      const file = event.target.files[0]
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${user.id}/${Math.random()}.${fileExt}`
+
+      // Удаляем старый аватар если есть
+      if (profile.avatar_url) {
+        const oldPath = profile.avatar_url.split('/').slice(-2).join('/')
+        await supabase.storage.from('avatars').remove([oldPath])
+      }
+
+      // Загружаем новый
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file)
+
+      if (uploadError) throw uploadError
+
+      // Получаем публичный URL
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName)
+
+      setProfile({ ...profile, avatar_url: data.publicUrl })
+      
+      // Сохраняем в базу
+      await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          avatar_url: data.publicUrl,
+          updated_at: new Date().toISOString()
+        })
+
+    } catch (error: any) {
+      alert('Ошибка загрузки: ' + error.message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const removeAvatar = async () => {
+    if (!profile.avatar_url) return
+
+    try {
+      const path = profile.avatar_url.split('/').slice(-2).join('/')
+      await supabase.storage.from('avatars').remove([path])
+      
+      setProfile({ ...profile, avatar_url: null })
+      
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: null })
+        .eq('id', user.id)
+    } catch (error: any) {
+      alert('Ошибка удаления: ' + error.message)
+    }
   }
 
   const handleLogout = async () => {
@@ -101,31 +177,64 @@ export default function ProfilePage() {
           {/* Avatar Preview */}
           <div className="space-y-6">
             <div className="text-center">
-              <div 
-                className="w-32 h-32 rounded-full mx-auto mb-4 flex items-center justify-center text-5xl font-bold text-white glow"
-                style={{ backgroundColor: profile.avatar_color }}
-              >
-                {profile.username ? profile.username[0].toUpperCase() : '?'}
-              </div>
-              <p className="text-gray-400 text-sm">Выберите цвет аватара</p>
+              {profile.avatar_url ? (
+                <div className="relative inline-block">
+                  <img 
+                    src={profile.avatar_url}
+                    alt="Avatar"
+                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-vapor-blue glow"
+                  />
+                  <button
+                    onClick={removeAvatar}
+                    className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <div 
+                  className="w-32 h-32 rounded-full mx-auto mb-4 flex items-center justify-center text-5xl font-bold text-white glow"
+                  style={{ backgroundColor: profile.avatar_color }}
+                >
+                  {profile.username ? profile.username[0].toUpperCase() : '?'}
+                </div>
+              )}
+              
+              <label className="cursor-pointer bg-vapor-blue hover:bg-vapor-lightblue text-white px-4 py-2 rounded-lg transition-all inline-block glow">
+                {uploading ? 'Загрузка...' : 'Загрузить фото'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={uploadAvatar}
+                  disabled={uploading}
+                  className="hidden"
+                />
+              </label>
             </div>
 
-            <div className="grid grid-cols-4 gap-3">
-              {avatarColors.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setProfile({ ...profile, avatar_color: color })}
-                  className={`w-12 h-12 rounded-full transition-all hover:scale-110 ${
-                    profile.avatar_color === color ? 'ring-4 ring-white' : ''
-                  }`}
-                  style={{ backgroundColor: color }}
-                />
-              ))}
+            <div>
+              <p className="text-gray-400 text-sm mb-2">Выберите цвет аватара</p>
+              <div className="grid grid-cols-4 gap-3">
+                {avatarColors.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setProfile({ ...profile, avatar_color: color })}
+                    className={`w-12 h-12 rounded-full transition-all hover:scale-110 ${
+                      profile.avatar_color === color ? 'ring-4 ring-white' : ''
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="bg-vapor-dark/50 p-4 rounded-lg">
               <p className="text-sm text-gray-400 mb-2">Email:</p>
               <p className="text-vapor-lightblue">{user?.email}</p>
+            </div>
+
+            <div className="text-xs text-gray-500 text-center">
+              💾 Изменения сохраняются автоматически
             </div>
           </div>
 
@@ -159,14 +268,6 @@ export default function ProfilePage() {
               />
               <p className="text-xs text-gray-500 mt-1">{profile.bio.length}/200</p>
             </div>
-
-            <button
-              onClick={saveProfile}
-              disabled={saving}
-              className="w-full bg-vapor-blue hover:bg-vapor-lightblue text-white py-3 rounded-lg font-medium transition-all hover:scale-105 glow disabled:opacity-50"
-            >
-              {saving ? 'Сохранение...' : 'Сохранить изменения'}
-            </button>
 
             <button
               onClick={handleLogout}
