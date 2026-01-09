@@ -9,6 +9,7 @@ interface Profile {
   avatar_url: string | null
   avatar_color: string
   bio: string
+  theme: 'jojo' | 'dio'
 }
 
 export default function ProfilePage() {
@@ -20,13 +21,33 @@ export default function ProfilePage() {
     username: '',
     avatar_url: null,
     avatar_color: '#1b8edb',
-    bio: ''
+    bio: '',
+    theme: 'jojo'
   })
 
   const avatarColors = [
     '#1b8edb', '#66c0f4', '#8b5cf6', '#ec4899', 
     '#f59e0b', '#10b981', '#ef4444', '#6366f1'
   ]
+
+  const themes = {
+    jojo: {
+      name: 'JoJo',
+      bg: 'from-vapor-darker to-vapor-dark',
+      accent: 'vapor-blue',
+      border: 'vapor-blue/30',
+      text: 'text-vapor-lightblue'
+    },
+    dio: {
+      name: 'DIO',
+      bg: 'from-yellow-900 to-yellow-950',
+      accent: 'yellow-500',
+      border: 'yellow-500/30',
+      text: 'text-yellow-400'
+    }
+  }
+
+  const currentTheme = themes[profile.theme]
 
   useEffect(() => {
     checkUser()
@@ -40,7 +61,7 @@ export default function ProfilePage() {
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [profile.username, profile.bio, profile.avatar_color])
+  }, [profile.username, profile.bio, profile.avatar_color, profile.theme])
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -65,7 +86,8 @@ export default function ProfilePage() {
         username: data.username || '',
         avatar_url: data.avatar_url || null,
         avatar_color: data.avatar_color || '#1b8edb',
-        bio: data.bio || ''
+        bio: data.bio || '',
+        theme: data.theme || 'jojo'
       })
     }
   }
@@ -81,6 +103,7 @@ export default function ProfilePage() {
         avatar_url: profile.avatar_url,
         avatar_color: profile.avatar_color,
         bio: profile.bio,
+        theme: profile.theme,
         updated_at: new Date().toISOString()
       })
 
@@ -170,8 +193,32 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-vapor-darker/80 backdrop-blur-md rounded-xl p-8 border border-vapor-blue/30 glow">
-        <h1 className="text-4xl font-bold mb-8 text-vapor-lightblue">Мой профиль</h1>
+      <div className={`bg-gradient-to-br ${currentTheme.bg} backdrop-blur-md rounded-xl p-8 border border-${currentTheme.border} glow`}>
+        <h1 className={`text-4xl font-bold mb-8 ${currentTheme.text}`}>Мой профиль</h1>
+
+        {/* Theme Selector */}
+        <div className="mb-8 flex gap-4 justify-center">
+          <button
+            onClick={() => setProfile({ ...profile, theme: 'jojo' })}
+            className={`px-6 py-3 rounded-lg font-bold transition-all ${
+              profile.theme === 'jojo'
+                ? 'bg-vapor-blue text-white scale-110'
+                : 'bg-vapor-dark/50 text-gray-400 hover:scale-105'
+            }`}
+          >
+            ⭐ JoJo (Темная)
+          </button>
+          <button
+            onClick={() => setProfile({ ...profile, theme: 'dio' })}
+            className={`px-6 py-3 rounded-lg font-bold transition-all ${
+              profile.theme === 'dio'
+                ? 'bg-yellow-500 text-black scale-110'
+                : 'bg-vapor-dark/50 text-gray-400 hover:scale-105'
+            }`}
+          >
+            ☀️ DIO (Желтая)
+          </button>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Avatar Preview */}
@@ -182,7 +229,7 @@ export default function ProfilePage() {
                   <img 
                     src={profile.avatar_url}
                     alt="Avatar"
-                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-vapor-blue glow"
+                    className={`w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-${currentTheme.accent} glow`}
                   />
                   <button
                     onClick={removeAvatar}
@@ -200,7 +247,7 @@ export default function ProfilePage() {
                 </div>
               )}
               
-              <label className="cursor-pointer bg-vapor-blue hover:bg-vapor-lightblue text-white px-4 py-2 rounded-lg transition-all inline-block glow">
+              <label className={`cursor-pointer bg-${currentTheme.accent} hover:opacity-80 text-white px-4 py-2 rounded-lg transition-all inline-block glow`}>
                 {uploading ? 'Загрузка...' : 'Загрузить фото'}
                 <input
                   type="file"
@@ -228,9 +275,9 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="bg-vapor-dark/50 p-4 rounded-lg">
+            <div className="bg-black/30 p-4 rounded-lg">
               <p className="text-sm text-gray-400 mb-2">Email:</p>
-              <p className="text-vapor-lightblue">{user?.email}</p>
+              <p className={currentTheme.text}>{user?.email}</p>
             </div>
 
             <div className="text-xs text-gray-500 text-center">
@@ -248,7 +295,7 @@ export default function ProfilePage() {
                 type="text"
                 value={profile.username}
                 onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded-lg focus:border-vapor-blue focus:outline-none"
+                className="w-full px-4 py-3 bg-black/30 border border-gray-600 rounded-lg focus:border-${currentTheme.accent} focus:outline-none text-white"
                 placeholder="Введите имя"
                 maxLength={20}
               />
@@ -261,7 +308,7 @@ export default function ProfilePage() {
               <textarea
                 value={profile.bio}
                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded-lg focus:border-vapor-blue focus:outline-none resize-none"
+                className="w-full px-4 py-3 bg-black/30 border border-gray-600 rounded-lg focus:border-${currentTheme.accent} focus:outline-none resize-none text-white"
                 placeholder="Расскажите о себе..."
                 rows={4}
                 maxLength={200}

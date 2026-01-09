@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
@@ -36,6 +37,14 @@ export default function Home() {
             }}
           />
         ))}
+      </div>
+
+      {/* Characters */}
+      <div className="fixed left-0 bottom-0 z-0 opacity-30 hover:opacity-60 transition-opacity duration-500">
+        <img src="/assets/character1.svg" alt="" className="h-[400px] w-auto" />
+      </div>
+      <div className="fixed right-0 bottom-0 z-0 opacity-30 hover:opacity-60 transition-opacity duration-500">
+        <img src="/assets/character2.svg" alt="" className="h-[400px] w-auto" />
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
@@ -101,17 +110,17 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-8 text-vapor-lightblue">🔥 Популярные игры</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: 'Cyber Quest 2077', genre: 'RPG', price: '1999₽' },
-              { name: 'Battle Royale X', genre: 'Action', price: 'Бесплатно' },
-              { name: 'Space Explorer', genre: 'Adventure', price: '899₽' },
-              { name: 'Racing Legends', genre: 'Racing', price: '1499₽' },
+              { name: 'Cyber Quest 2077', genre: 'RPG', price: '1999₽', emoji: '🤖' },
+              { name: 'Battle Royale X', genre: 'Action', price: 'Бесплатно', emoji: '⚔️' },
+              { name: 'Space Explorer', genre: 'Adventure', price: '899₽', emoji: '🚀' },
+              { name: 'Racing Legends', genre: 'Racing', price: '1499₽', emoji: '🏎️' },
             ].map((game, i) => (
               <div 
                 key={i}
                 className="bg-vapor-darker/80 backdrop-blur-md rounded-xl overflow-hidden border border-vapor-blue/20 hover:border-vapor-blue/50 transition-all hover:scale-105 cursor-pointer"
               >
                 <div className="h-40 bg-gradient-to-br from-vapor-blue/30 to-vapor-darker flex items-center justify-center text-6xl">
-                  🎮
+                  {game.emoji}
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-lg mb-1">{game.name}</h3>
@@ -123,17 +132,36 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Новости и обновления */}
+        <div className="mt-20">
+          <h2 className="text-3xl font-bold mb-8 text-vapor-lightblue">📰 Новости</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-vapor-darker/80 backdrop-blur-md p-6 rounded-xl border border-vapor-blue/20 hover:border-vapor-blue/50 transition-all">
+              <div className="text-sm text-gray-400 mb-2">2 часа назад</div>
+              <h3 className="text-xl font-bold mb-3">Зимняя распродажа началась!</h3>
+              <p className="text-gray-300 mb-4">Скидки до 90% на тысячи игр. Не пропустите лучшие предложения года!</p>
+              <button className="text-vapor-lightblue hover:underline">Читать далее →</button>
+            </div>
+            <div className="bg-vapor-darker/80 backdrop-blur-md p-6 rounded-xl border border-vapor-blue/20 hover:border-vapor-blue/50 transition-all">
+              <div className="text-sm text-gray-400 mb-2">1 день назад</div>
+              <h3 className="text-xl font-bold mb-3">Новое обновление клиента</h3>
+              <p className="text-gray-300 mb-4">Улучшенная производительность, новые функции и исправления ошибок.</p>
+              <button className="text-vapor-lightblue hover:underline">Читать далее →</button>
+            </div>
+          </div>
+        </div>
+
         {/* Статистика */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-vapor-darker/80 backdrop-blur-md p-8 rounded-xl border border-vapor-blue/20 text-center">
+        <div className="mt-20 mb-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-vapor-darker/80 backdrop-blur-md p-8 rounded-xl border border-vapor-blue/20 text-center hover:scale-105 transition-all">
             <div className="text-4xl font-bold text-vapor-lightblue mb-2">10M+</div>
             <p className="text-gray-400">Активных игроков</p>
           </div>
-          <div className="bg-vapor-darker/80 backdrop-blur-md p-8 rounded-xl border border-vapor-blue/20 text-center">
+          <div className="bg-vapor-darker/80 backdrop-blur-md p-8 rounded-xl border border-vapor-blue/20 text-center hover:scale-105 transition-all">
             <div className="text-4xl font-bold text-vapor-lightblue mb-2">50K+</div>
             <p className="text-gray-400">Игр в каталоге</p>
           </div>
-          <div className="bg-vapor-darker/80 backdrop-blur-md p-8 rounded-xl border border-vapor-blue/20 text-center">
+          <div className="bg-vapor-darker/80 backdrop-blur-md p-8 rounded-xl border border-vapor-blue/20 text-center hover:scale-105 transition-all">
             <div className="text-4xl font-bold text-vapor-lightblue mb-2">24/7</div>
             <p className="text-gray-400">Поддержка</p>
           </div>
