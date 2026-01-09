@@ -28,23 +28,23 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-vapor-darker/80 backdrop-blur-md border-b border-vapor-blue/30 sticky top-0 z-50">
+    <header className="bg-vapor-darker/95 backdrop-blur-xl border-b-2 border-vapor-blue/40 sticky top-0 z-50 shadow-lg shadow-vapor-blue/20">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-vapor-lightblue hover:scale-110 transition-transform">
-          VAPOR
+        <Link href="/" className="text-3xl font-bold text-vapor-lightblue hover:scale-110 transition-transform neon-text">
+          ⚡ VAPOR
         </Link>
         <nav className="flex gap-4 items-center">
           {user ? (
             <>
               <Link 
                 href="/profile" 
-                className="bg-vapor-blue hover:bg-vapor-lightblue text-white px-6 py-2 rounded-lg transition-all hover:scale-105 glow flex items-center gap-2"
+                className="bg-gradient-to-r from-vapor-blue to-vapor-lightblue text-white px-6 py-3 rounded-xl transition-all hover:scale-110 glow flex items-center gap-2 font-bold btn-press"
               >
                 <span>👤</span> Профиль
               </Link>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-all hover:scale-105"
+                className="bg-gradient-to-r from-red-600 to-red-500 text-white px-6 py-3 rounded-xl transition-all hover:scale-110 font-bold btn-press"
               >
                 Выйти
               </button>
@@ -53,13 +53,13 @@ export default function Header() {
             <>
               <Link 
                 href="/login" 
-                className="bg-vapor-blue hover:bg-vapor-lightblue text-white px-6 py-2 rounded-lg transition-all hover:scale-105 glow"
+                className="bg-gradient-to-r from-vapor-blue to-vapor-lightblue text-white px-6 py-3 rounded-xl transition-all hover:scale-110 glow font-bold btn-press"
               >
                 Войти
               </Link>
               <Link 
                 href="/register" 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-all hover:scale-105"
+                className="bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-3 rounded-xl transition-all hover:scale-110 font-bold btn-press"
               >
                 Регистрация
               </Link>

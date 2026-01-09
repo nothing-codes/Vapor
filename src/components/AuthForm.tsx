@@ -48,8 +48,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-2">
-          Email
+        <label htmlFor="email" className="block text-sm font-bold mb-2 text-gray-300">
+          📧 Email
         </label>
         <input
           id="email"
@@ -57,14 +57,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded-lg focus:border-vapor-blue focus:outline-none focus:ring-2 focus:ring-vapor-blue/50"
+          className="w-full px-4 py-4 bg-vapor-dark/50 border-2 border-gray-600 rounded-xl focus:border-vapor-blue focus:outline-none focus:ring-2 focus:ring-vapor-blue/50 text-white text-lg transition-all"
           placeholder="your@email.com"
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium mb-2">
-          Пароль
+        <label htmlFor="password" className="block text-sm font-bold mb-2 text-gray-300">
+          🔒 Пароль
         </label>
         <input
           id="password"
@@ -73,29 +73,29 @@ export default function AuthForm({ mode }: AuthFormProps) {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="w-full px-4 py-3 bg-vapor-dark border border-gray-600 rounded-lg focus:border-vapor-blue focus:outline-none focus:ring-2 focus:ring-vapor-blue/50"
+          className="w-full px-4 py-4 bg-vapor-dark/50 border-2 border-gray-600 rounded-xl focus:border-vapor-blue focus:outline-none focus:ring-2 focus:ring-vapor-blue/50 text-white text-lg transition-all"
           placeholder="••••••••"
         />
       </div>
 
       {error && (
-        <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg animate-pulse">
-          {error}
+        <div className="bg-red-900/50 border-2 border-red-500 text-red-200 px-5 py-4 rounded-xl animate-pulse font-bold">
+          ⚠️ {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg">
-          {success}
+        <div className="bg-green-900/50 border-2 border-green-500 text-green-200 px-5 py-4 rounded-xl font-bold">
+          ✅ {success}
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-vapor-blue hover:bg-vapor-lightblue text-white py-3 rounded-lg font-medium transition-all hover:scale-105 disabled:opacity-50 glow"
+        className="w-full bg-gradient-to-r from-vapor-blue to-vapor-lightblue text-white py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 disabled:opacity-50 glow btn-press"
       >
-        {loading ? 'Загрузка...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
+        {loading ? '⏳ Загрузка...' : mode === 'login' ? '🚀 Войти' : '✨ Зарегистрироваться'}
       </button>
     </form>
   )

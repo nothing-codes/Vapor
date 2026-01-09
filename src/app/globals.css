@@ -19,6 +19,12 @@ body {
   height: 100%;
   z-index: -1;
   background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+  animation: bgShift 15s ease infinite;
+}
+
+@keyframes bgShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .animated-bg::before {
@@ -42,26 +48,171 @@ body {
   border-radius: 50%;
   background: rgba(102, 192, 244, 0.3);
   animation: float 15s infinite ease-in-out;
+  box-shadow: 0 0 20px rgba(102, 192, 244, 0.5);
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
   10% { opacity: 1; }
+  50% { transform: translateY(-50vh) translateX(25px) scale(1.5); }
   90% { opacity: 1; }
-  100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+  100% { transform: translateY(-100vh) translateX(50px) scale(0.5); opacity: 0; }
 }
 
 /* Glow effect */
 .glow {
   box-shadow: 0 0 20px rgba(27, 142, 219, 0.5);
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .glow:hover {
-  box-shadow: 0 0 30px rgba(102, 192, 244, 0.8);
+  box-shadow: 0 0 40px rgba(102, 192, 244, 0.8), 0 0 60px rgba(102, 192, 244, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Neon text effect */
+.neon-text {
+  text-shadow: 
+    0 0 10px rgba(102, 192, 244, 0.8),
+    0 0 20px rgba(102, 192, 244, 0.6),
+    0 0 30px rgba(102, 192, 244, 0.4),
+    0 0 40px rgba(27, 142, 219, 0.3);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% { 
+    text-shadow: 
+      0 0 10px rgba(102, 192, 244, 0.8),
+      0 0 20px rgba(102, 192, 244, 0.6),
+      0 0 30px rgba(102, 192, 244, 0.4);
+  }
+  50% { 
+    text-shadow: 
+      0 0 20px rgba(102, 192, 244, 1),
+      0 0 30px rgba(102, 192, 244, 0.8),
+      0 0 40px rgba(102, 192, 244, 0.6),
+      0 0 50px rgba(27, 142, 219, 0.4);
+  }
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 192, 244, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.card-hover:hover::before {
+  left: 100%;
+}
+
+.card-hover:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(27, 142, 219, 0.4);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+/* Slide in from right */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce 3s ease-in-out infinite;
+}
+
+/* Rotate animation */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rotate {
+  animation: rotate 20s linear infinite;
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* Button press effect */
+.btn-press {
+  transition: all 0.1s ease;
+}
+
+.btn-press:active {
+  transform: scale(0.95);
 }
 
 /* Smooth transitions */
 * {
   transition: all 0.2s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e27;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1b8edb, #66c0f4);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #66c0f4, #1b8edb);
 }
