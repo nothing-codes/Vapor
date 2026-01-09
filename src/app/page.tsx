@@ -40,11 +40,11 @@ export default function Home() {
       </div>
 
       {/* Characters */}
-      <div className="fixed left-0 bottom-0 z-0 opacity-30 hover:opacity-60 transition-opacity duration-500">
-        <img src="/assets/character1.svg" alt="" className="h-[400px] w-auto" />
+      <div className="fixed left-0 bottom-0 z-0 opacity-40 hover:opacity-70 transition-opacity duration-500">
+        <img src="/assets/jojo.png" alt="" className="h-[500px] w-auto" />
       </div>
-      <div className="fixed right-0 bottom-0 z-0 opacity-30 hover:opacity-60 transition-opacity duration-500">
-        <img src="/assets/character2.svg" alt="" className="h-[400px] w-auto" />
+      <div className="fixed right-0 bottom-0 z-0 opacity-40 hover:opacity-70 transition-opacity duration-500">
+        <img src="/assets/dio.png" alt="" className="h-[500px] w-auto" />
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
